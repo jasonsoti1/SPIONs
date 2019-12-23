@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_3" xmlns:data="http://jpmml.org/jpmml-model/InlineTable" version="4.3">
+	<Header>
+		<Application name="JPMML-SkLearn" version="1.5.25"/>
+		<Timestamp>2019-12-20T16:10:02Z</Timestamp>
+	</Header>
+	<MiningBuildTask>
+		<Extension>PMMLPipeline(steps=[('scale', MinMaxScaler(copy=True, feature_range=(0, 1))),
+       ('classifier', LogisticRegression(C=40.0, class_weight=None, dual=False, fit_intercept=True,
+          intercept_scaling=1, max_iter=100, multi_class='warn',
+          n_jobs=None, penalty='l2', random_state=42, solver='warn',
+          tol=0.0001, verbose=0, warm_start=False))])</Extension>
+	</MiningBuildTask>
+	<DataDictionary>
+		<DataField name="cell viability" optype="categorical" dataType="integer">
+			<Value value="0"/>
+			<Value value="1"/>
+		</DataField>
+		<DataField name="Magnetic core" optype="continuous" dataType="double"/>
+		<DataField name="Overall size (nm)" optype="continuous" dataType="double"/>
+	</DataDictionary>
+	<TransformationDictionary/>
+	<RegressionModel functionName="classification" normalizationMethod="logit">
+		<MiningSchema>
+			<MiningField name="cell viability" usageType="target"/>
+			<MiningField name="Magnetic core"/>
+			<MiningField name="Overall size (nm)"/>
+		</MiningSchema>
+		<Output>
+			<OutputField name="probability(0)" optype="continuous" dataType="double" feature="probability" value="0"/>
+			<OutputField name="probability(1)" optype="continuous" dataType="double" feature="probability" value="1"/>
+		</Output>
+		<LocalTransformations>
+			<DerivedField name="mix_max_scaler(Overall size (nm))" optype="continuous" dataType="double">
+				<Apply function="+">
+					<Apply function="*">
+						<FieldRef field="Overall size (nm)"/>
+						<Constant dataType="double">0.006944444444444444</Constant>
+					</Apply>
+					<Constant dataType="double">-0.041666666666666664</Constant>
+				</Apply>
+			</DerivedField>
+		</LocalTransformations>
+		<RegressionTable intercept="-2.1927478387134336" targetCategory="1">
+			<NumericPredictor name="Magnetic core" coefficient="3.1353653499575524"/>
+			<NumericPredictor name="mix_max_scaler(Overall size (nm))" coefficient="-5.072968982849418"/>
+		</RegressionTable>
+		<RegressionTable intercept="0.0" targetCategory="0"/>
+	</RegressionModel>
+</PMML>
